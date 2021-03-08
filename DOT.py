@@ -23,7 +23,7 @@ License along with the Kon package.  If not, see
 import numpy
 
 def DOT(values):
-    array = numpy.concatenate((values, -numpy.flip(values)))
+    array = numpy.concatenate((-numpy.flip(values), values))
 
     matrix = numpy.zeros((array.size, array.size))
     #print(matrix.shape)
@@ -55,12 +55,13 @@ def DOT(values):
         Otemp[i] = numpy.matmul(matrix[(i<<1)+1], Omatrix.transpose())
 
     for vector in matrix:
-        print(vector)
+        print(vector*64*numpy.sqrt(array.size))
 
     print(numpy.allclose(numpy.matmul(matrix, matrix.transpose()), numpy.identity(array.size))) #verification
 
-#DOT([3, 1]) # 4x4 DTT
-DOT([7, 5, 3, 1]) # 8x8 DTT
-#DOT([15, 13, 11, 9, 7, 5, 3, 1]) # 16x16 DTT
-#DOT([31, 29, 27, 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1]) # 32x32 DTT
-#DOT([63, 61, 59, 57, 55, 53, 51, 49, 47, 45, 43, 41, 39, 37, 35, 33, 31, 29, 27, 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1]) # 64x64 DTT
+#DOT([1]) # 2x2 DTT
+#DOT([1, 3]) # 4x4 DTT
+DOT([1, 3, 5, 7]) # 8x8 DTT
+#DOT([1, 3, 5, 7, 9, 11, 13, 15]) # 16x16 DTT
+#DOT([1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]) # 32x32 DTT
+#DOT([1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63]) # 64x64 DTT
