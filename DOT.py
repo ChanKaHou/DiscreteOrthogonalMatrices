@@ -54,9 +54,13 @@ def DOT(values):
         Etemp[i] = numpy.matmul(matrix[(i<<1)], numpy.transpose(Ematrix))
         Otemp[i] = numpy.matmul(matrix[(i<<1)+1], numpy.transpose(Omatrix))
 
-    for vector in matrix: print(vector)
+    for vector in matrix:
+        print(vector)
 
-DOT([31, 29, 27, 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1]) # 32x32 DTT
-DOT([15, 13, 11, 9, 7, 5, 3, 1]) # 16x16 DTT
+    print(numpy.allclose(numpy.matmul(matrix, numpy.transpose(matrix)), numpy.identity(array.size))) #verification
+
+#DOT([3, 1]) # 4x4 DTT
 DOT([7, 5, 3, 1]) # 8x8 DTT
-DOT([3, 1]) # 4x4 DTT
+#DOT([15, 13, 11, 9, 7, 5, 3, 1]) # 16x16 DTT
+#DOT([31, 29, 27, 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1]) # 32x32 DTT
+#DOT([63, 61, 59, 57, 55, 53, 51, 49, 47, 45, 43, 41, 39, 37, 35, 33, 31, 29, 27, 25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1]) # 64x64 DTT
