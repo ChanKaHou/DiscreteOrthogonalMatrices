@@ -51,13 +51,13 @@ def DOT(values):
         matrix[(i<<1)] /= numpy.linalg.norm(matrix[(i<<1)])
         matrix[(i<<1)+1] /= numpy.linalg.norm(matrix[(i<<1)+1])
     
-        Etemp[i] = numpy.matmul(matrix[(i<<1)], numpy.transpose(Ematrix))
-        Otemp[i] = numpy.matmul(matrix[(i<<1)+1], numpy.transpose(Omatrix))
+        Etemp[i] = numpy.matmul(matrix[(i<<1)], Ematrix.transpose())
+        Otemp[i] = numpy.matmul(matrix[(i<<1)+1], Omatrix.transpose())
 
     for vector in matrix:
         print(vector)
 
-    print(numpy.allclose(numpy.matmul(matrix, numpy.transpose(matrix)), numpy.identity(array.size))) #verification
+    print(numpy.allclose(numpy.matmul(matrix, matrix.transpose()), numpy.identity(array.size))) #verification
 
 #DOT([3, 1]) # 4x4 DTT
 DOT([7, 5, 3, 1]) # 8x8 DTT
