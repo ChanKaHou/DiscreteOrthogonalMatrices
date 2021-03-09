@@ -55,7 +55,7 @@ def DOT(values):
         Otemp[i] = numpy.matmul(matrix[(i<<1)+1], Omatrix.transpose())
 
     for vector in matrix:
-        #print(vector*64*numpy.sqrt(array.size)) #integer approximation for video coding
+        #print(numpy.rint(vector*64*numpy.sqrt(array.size))) #integer approximation for video coding
         print(vector)
 
     print(numpy.allclose(numpy.matmul(matrix, matrix.transpose()), numpy.identity(array.size))) #verification
