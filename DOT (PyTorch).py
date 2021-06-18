@@ -22,46 +22,43 @@ License along with the Kon package.  If not, see
 
 import torch
 
+torch.set_default_dtype(torch.double)
+
 def DOT(values):
     array = torch.cat((-values.flip(0), values))
 
-    matrix = torch.zeros((array.size(0), array.size(0)))
-
-    Emat = torch.tile(array, (array.size(0)>>1, 1))
-    Omat = torch.tile(array, (array.size(0)>>1, 1))
-
-    for i in range(array.size(0)>>1):
+    Emat = torch.empty([len(array)>>1, len(array)])
+    Omat = torch.empty([len(array)>>1, len(array)])
+    for i in range(len(array)>>1):
         Emat[i] = torch.pow(array, (i<<1))
         Omat[i] = torch.pow(array, (i<<1)+1)
-    #print(Emat)
-    #print(Omat)
+    Etemp = torch.empty([len(array)>>1, len(array)>>1])
+    Otemp = torch.empty([len(array)>>1, len(array)>>1])
 
-    Etemp = torch.zeros((array.size(0)>>1, array.size(0)>>1))
-    Otemp = torch.zeros((array.size(0)>>1, array.size(0)>>1))
-    #print(Etemp)
-    #print(Otemp)
+    mat = torch.empty([len(array), len(array)])
 
-    for i in range(array.size(0)>>1):
-        matrix[(i<<1)] = Emat[i]
-        matrix[(i<<1)+1] = Omat[i]
+    for i in range(len(array)>>1):
+        mat[(i<<1)] = Emat[i]
+        mat[(i<<1)+1] = Omat[i]
 
         if i > 0:
-            matrix[(i<<1)] += (torch.linalg.inv(Etemp[:i,:i]) @ -Etemp[:i,i]).t() @ Emat[:i]
-            matrix[(i<<1)+1] += (torch.linalg.inv(Otemp[:i,:i]) @ -Otemp[:i,i]).t() @ Omat[:i]
+            mat[(i<<1)] += torch.tensordot(torch.linalg.inv(Etemp[:i,:i]) @ -Etemp[:i,i], Emat[:i], dims=1)
+            mat[(i<<1)+1] += torch.tensordot(torch.linalg.inv(Otemp[:i,:i]) @ -Otemp[:i,i], Omat[:i], dims=1)
 
-        matrix[(i<<1)] = torch.nn.functional.normalize(matrix[(i<<1)], dim=-1)
-        matrix[(i<<1)+1] = torch.nn.functional.normalize(matrix[(i<<1)+1], dim=-1)
+        mat[(i<<1)] = torch.nn.functional.normalize(mat[(i<<1)], dim=-1)
+        mat[(i<<1)+1] = torch.nn.functional.normalize(mat[(i<<1)+1], dim=-1)
 
-        Etemp[i] = (matrix[(i<<1)] @ Emat.t())
-        Otemp[i] = (matrix[(i<<1)+1] @ Omat.t())
+        Etemp[i] = torch.tensordot(Emat, mat[(i<<1)], dims=1)
+        Otemp[i] = torch.tensordot(Omat, mat[(i<<1)+1], dims=1)
 
-    return matrix
+    return mat
 
-#DOT([1.0]) # 2x2 DTT
-#DOT([1.0, 3.0]) # 4x4 DTT
-matrix = DOT(torch.tensor([1.0, 3.0, 5.0, 7.0])) # 8x8 DTT
+#mat = DOT(torch.tensor([1.0])) # 8x8 DTT
+#mat = DOT(torch.tensor([1.0, 3.0])) # 8x8 DTT
+mat = DOT(torch.tensor([1.0, 3.0, 5.0, 7.0])) # 8x8 DTT
 #DOT([2.0*i+1.0 for i in range(8)]) # 16x16 DTT
 #DOT([2.0*i+1.0 for i in range(16)]) # 32x32 DTT
 #DOT([2.0*i+1.0 for i in range(32)]) # 64x64 DTT
 
-print(matrix)
+print(torch.allclose(mat @ mat.t(), torch.eye(mat.size(0))))  #verification
+print(mat)
