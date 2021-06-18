@@ -54,15 +54,8 @@ def DOT(values):
         Etemp[i] = numpy.matmul(matrix[(i<<1)], Ematrix.transpose())
         Otemp[i] = numpy.matmul(matrix[(i<<1)+1], Omatrix.transpose())
 
-    for vector in matrix:
-        #print(numpy.rint(vector*64*numpy.sqrt(array.size))) #integer approximation for video coding
-        print(vector)
+    return matrix
 
-    print(numpy.allclose(numpy.matmul(matrix, matrix.transpose()), numpy.identity(array.size))) #verification
-
-#DOT([1]) # 2x2 DTT
-#DOT([1, 3]) # 4x4 DTT
-DOT([1, 3, 5, 7]) # 8x8 DTT
-#DOT([2*i+1 for i in range(8)]) # 16x16 DTT
-#DOT([2*i+1 for i in range(16)]) # 32x32 DTT
-#DOT([2*i+1 for i in range(32)]) # 64x64 DTT
+matrix = DOT([numpy.cos(7*numpy.pi/16), numpy.cos(5*numpy.pi/16), numpy.cos(3*numpy.pi/16), numpy.cos(numpy.pi/16)]) # 8x8 DCT
+print(matrix)
+#print(numpy.allclose(numpy.matmul(matrix, matrix.transpose()), numpy.identity(matrix[0].size))) #verification
