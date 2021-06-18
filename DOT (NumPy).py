@@ -25,37 +25,33 @@ import numpy
 def DOT(values):
     array = numpy.concatenate((-numpy.flip(values), values))
 
-    matrix = numpy.zeros((array.size, array.size))
-    #print(matrix.shape)
+    Emat = numpy.empty([len(array)>>1, len(array)])
+    Omat = numpy.empty([len(array)>>1, len(array)])
+    for i in range(len(array)>>1):
+        Emat[i] = numpy.power(array, (i<<1))
+        Omat[i] = numpy.power(array, (i<<1)+1)
+    Etemp = numpy.empty([len(array)>>1, len(array)>>1])
+    Otemp = numpy.empty([len(array)>>1, len(array)>>1])
 
-    Ematrix = numpy.tile(array, (array.size>>1, 1))
-    Omatrix = numpy.tile(array, (array.size>>1, 1))
-    for i in range(array.size>>1):
-        Ematrix[i] **= (i<<1)
-        Omatrix[i] **= (i<<1)+1
-    #print(Ematrix)
-    #print(Omatrix)
+    mat = numpy.empty([len(array), len(array)])
 
-    Etemp = numpy.zeros((array.size>>1, array.size>>1))
-    Otemp = numpy.zeros((array.size>>1, array.size>>1))
-    #print(Etemp)
-    #print(Otemp)
+    for i in range(len(array)>>1):
+        mat[(i<<1)] = Emat[i]
+        mat[(i<<1)+1] = Omat[i]
 
-    for i in range(array.size>>1):
-        matrix[(i<<1)] = Ematrix[i]
-        matrix[(i<<1)+1] = Omatrix[i]
         if i > 0:
-            matrix[(i<<1)] += numpy.matmul(numpy.transpose(numpy.matmul(numpy.linalg.inv(Etemp[:i,:i]), -Etemp[:i,i])), Ematrix[:i])
-            matrix[(i<<1)+1] += numpy.matmul(numpy.transpose(numpy.matmul(numpy.linalg.inv(Otemp[:i,:i]), -Otemp[:i,i])), Omatrix[:i])
+            mat[(i<<1)] += numpy.dot(numpy.linalg.inv(Etemp[:i,:i]) @ -Etemp[:i,i], Emat[:i])
+            mat[(i<<1)+1] += numpy.dot(numpy.linalg.inv(Otemp[:i,:i]) @ -Otemp[:i,i], Omat[:i])
 
-        matrix[(i<<1)] /= numpy.linalg.norm(matrix[(i<<1)])
-        matrix[(i<<1)+1] /= numpy.linalg.norm(matrix[(i<<1)+1])
-    
-        Etemp[i] = numpy.matmul(matrix[(i<<1)], Ematrix.transpose())
-        Otemp[i] = numpy.matmul(matrix[(i<<1)+1], Omatrix.transpose())
+        mat[(i<<1)] /= numpy.linalg.norm(mat[(i<<1)])
+        mat[(i<<1)+1] /= numpy.linalg.norm(mat[(i<<1)+1])
 
-    return matrix
+        Etemp[i] = numpy.dot(Emat, mat[(i<<1)])
+        Otemp[i] = numpy.dot(Omat, mat[(i<<1)+1])
 
-matrix = DOT([numpy.cos(7*numpy.pi/16), numpy.cos(5*numpy.pi/16), numpy.cos(3*numpy.pi/16), numpy.cos(numpy.pi/16)]) # 8x8 DCT
-print(matrix)
-#print(numpy.allclose(numpy.matmul(matrix, matrix.transpose()), numpy.identity(matrix[0].size))) #verification
+    return mat
+
+mat = DOT([1, 3]) # 8x8 DTT
+#mat = DOT([numpy.cos(7*numpy.pi/16), numpy.cos(5*numpy.pi/16), numpy.cos(3*numpy.pi/16), numpy.cos(numpy.pi/16)]) # 8x8 DCT
+print(numpy.allclose(mat @ mat.transpose(), numpy.identity(mat[0].size))) #verification
+print(mat)
