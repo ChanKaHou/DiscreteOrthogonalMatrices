@@ -53,12 +53,14 @@ def DOT(values):
 
     return mat
 
-#mat = DOT(torch.tensor([1.0])) # 8x8 DTT
-#mat = DOT(torch.tensor([1.0, 3.0])) # 8x8 DTT
-mat = DOT(torch.tensor([1.0, 3.0, 5.0, 7.0])) # 8x8 DTT
-#DOT([2.0*i+1.0 for i in range(8)]) # 16x16 DTT
-#DOT([2.0*i+1.0 for i in range(16)]) # 32x32 DTT
-#DOT([2.0*i+1.0 for i in range(32)]) # 64x64 DTT
+#Uncomment the specific statement below to run the test.
+
+#mat = DOT(torch.tensor([1.0])) # 2x2 DTT
+#mat = DOT(torch.tensor([1.0, 3.0])) # 4x4 DTT
+#mat = DOT(torch.tensor([1.0, 3.0, 5.0, 7.0])) # 8x8 DTT
+#mat = DOT([2.0*i+1.0 for i in range(8)]) # 16x16 DTT
+#mat = DOT([2.0*i+1.0 for i in range(16)]) # 32x32 DTT
+#mat = DOT([2.0*i+1.0 for i in range(32)]) # 64x64 DTT
 
 print(torch.allclose(mat @ mat.t(), torch.eye(mat.size(0))))  #verification
 print(mat)
