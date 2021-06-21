@@ -57,7 +57,7 @@ def DOT(values):
 #mat = DOT([1, 3]) # 4x4 DTT
 #mat = DOT([1, 3, 5, 7]) # 8x8 DTT
 
-#mat = DOT([numpy.cos(7*numpy.pi/16), numpy.cos(5*numpy.pi/16), numpy.cos(3*numpy.pi/16), numpy.cos(numpy.pi/16)]) # 8x8 DCT
+mat = DOT([numpy.cos(7*numpy.pi/16), numpy.cos(5*numpy.pi/16), numpy.cos(3*numpy.pi/16), numpy.cos(numpy.pi/16)]) # 8x8 DCT
 
 print(numpy.allclose(mat @ mat.transpose(), numpy.identity(mat[0].size))) #verification
 print(mat)
