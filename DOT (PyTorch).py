@@ -25,7 +25,7 @@ import torch
 torch.set_default_dtype(torch.double)
 
 def DOT(values):
-    array = torch.cat((-values.flip(0), values))
+    array = torch.cat((values, -values.flip(0)))
 
     Emat = torch.empty([len(array)>>1, len(array)])
     Omat = torch.empty([len(array)>>1, len(array)])
@@ -56,11 +56,11 @@ def DOT(values):
 #Uncomment the specific statement below to run the test.
 
 #mat = DOT(torch.tensor([1.0])) # 2x2 DTT
-#mat = DOT(torch.tensor([1.0, 3.0])) # 4x4 DTT
-mat = DOT(torch.tensor([1.0, 3.0, 5.0, 7.0])) # 8x8 DTT
-#mat = DOT([2.0*i+1.0 for i in range(8)]) # 16x16 DTT
-#mat = DOT([2.0*i+1.0 for i in range(16)]) # 32x32 DTT
-#mat = DOT([2.0*i+1.0 for i in range(32)]) # 64x64 DTT
+#mat = DOT(torch.tensor([3.0, 1.0])) # 4x4 DTT
+mat = DOT(torch.tensor([7.0, 5.0, 3.0, 1.0])) # 8x8 DTT
+#mat = DOT(torch.tensor([2.0*i-1.0 for i in range(8,0,-1)])) # 16x16 DTT
+#mat = DOT(torch.tensor([2.0*i-1.0 for i in range(16,0,-1)])) # 32x32 DTT
+#mat = DOT(torch.tensor([2.0*i-1.0 for i in range(32,0,-1)])) # 64x64 DTT
 
 print(torch.allclose(mat @ mat.t(), torch.eye(mat.size(0))))  #verification
 print(mat)
